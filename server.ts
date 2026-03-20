@@ -10,6 +10,60 @@ import { fileURLToPath } from "url";
 import nodemailer from "nodemailer";
 import admin from "firebase-admin";
 import { getFirestore } from "firebase-admin/firestore";
+import express from "express";
+import nodemailer from "nodemailer";
+import admin from "firebase-admin";
+
+const app = express();
+app.use(express.json());
+
+// 🔹 Firebase Admin setup
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT!);
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+// 🔹 SMTP setup
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+
+// 🔹 Example API (OTP send)
+app.post("/send-otp", async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM,
+      to: email,
+      subject: "Your OTP",
+      text: `Your OTP is ${otp}`,
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to send OTP" });
+  }
+});
+
+// 🔹 Gemini API example
+app.get("/ai", async (req, res) => {
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  res.json({
+    message: "Gemini connected",
+    keyExists: !!apiKey,
+  });
+});
+
+app.listen(3000, () => console.log("Server running"));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
