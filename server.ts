@@ -10,9 +10,6 @@ import { fileURLToPath } from "url";
 import nodemailer from "nodemailer";
 import admin from "firebase-admin";
 import { getFirestore } from "firebase-admin/firestore";
-import express from "express";
-import nodemailer from "nodemailer";
-import admin from "firebase-admin";
 
 const app = express();
 app.use(express.json());
