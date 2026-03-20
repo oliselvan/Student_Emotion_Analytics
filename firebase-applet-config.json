@@ -1,0 +1,11 @@
+{
+  "projectId": "emotion-95d44",
+  "appId": "1:561403029457:web:2d5f8f7df6b024dfa1a2f0",
+  "apiKey": "AIzaSyCbvGnhMM0_n5WRzlS41-qt9FXQzK7WnlA",
+  "authDomain": "emotion-95d44.firebaseapp.com",
+  "databaseURL": "https://emotion-95d44-default-rtdb.firebaseio.com",
+  "storageBucket": "emotion-95d44.firebasestorage.app",
+  "messagingSenderId": "561403029457",
+  "measurementId": "G-KT2W3B23EY",
+  "firestoreDatabaseId": "(default)"
+}

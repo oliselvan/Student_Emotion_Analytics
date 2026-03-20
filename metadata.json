@@ -1,0 +1,7 @@
+{
+  "name": "Student Emotional Analytics",
+  "description": "A comprehensive platform for educators to monitor student well-being and engagement through AI-powered facial analysis and sentiment tracking.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

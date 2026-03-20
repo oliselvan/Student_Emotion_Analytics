@@ -1,0 +1,109 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and role information",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["teacher", "student"] },
+        "name": { "type": "string" },
+        "picture": { "type": "string" },
+        "lastLogin": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "role"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "Student record in a classroom",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "password": { "type": "string" },
+        "gender": { "type": "string", "enum": ["male", "female", "other"] },
+        "avatar": { "type": "string" },
+        "isProfileComplete": { "type": "boolean" },
+        "isFlagged": { "type": "boolean" },
+        "lastAnalysis": { "$ref": "EmotionalAnalysis" },
+        "history": { "type": "array", "items": { "$ref": "EmotionalAnalysis" } },
+        "feedback": { "type": "array", "items": { "$ref": "Feedback" } },
+        "normalizedName": { "type": "string" }
+      },
+      "required": ["id", "name"]
+    },
+    "EmotionalAnalysis": {
+      "title": "Emotional Analysis",
+      "description": "Result of an emotional analysis scan",
+      "type": "object",
+      "properties": {
+        "timestamp": { "type": "string", "format": "date-time" },
+        "emotion": { "type": "string" },
+        "stressScore": { "type": "number" },
+        "engagement": { "type": "string" },
+        "summary": { "type": "string" }
+      }
+    },
+    "Feedback": {
+      "title": "Feedback",
+      "description": "Teacher feedback for a student",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "text": { "type": "string" },
+        "date": { "type": "string" }
+      }
+    },
+    "Chat": {
+      "title": "Chat",
+      "description": "Peer-to-peer chat session",
+      "type": "object",
+      "properties": {
+        "participantIds": { "type": "array", "items": { "type": "string" } },
+        "initiatorId": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "accepted", "rejected"] },
+        "messages": { "type": "array", "items": { "$ref": "ChatMessage" } },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ChatMessage": {
+      "title": "Chat Message",
+      "description": "A single message in a chat",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string" }
+      }
+    },
+    "Presence": {
+      "title": "Presence",
+      "description": "Student online status",
+      "type": "object",
+      "properties": {
+        "isOnline": { "type": "boolean" },
+        "lastSeen": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "users/{email}": {
+      "schema": "User",
+      "description": "Global user profiles"
+    },
+    "classrooms/{classroomId}/students/{studentId}": {
+      "schema": "Student",
+      "description": "Students within a specific classroom"
+    },
+    "classrooms/{classroomId}/chats/{chatId}": {
+      "schema": "Chat",
+      "description": "Peer chats within a classroom"
+    },
+    "classrooms/{classroomId}/presence/{studentId}": {
+      "schema": "Presence",
+      "description": "Real-time presence for students in a classroom"
+    }
+  }
+}
