@@ -416,7 +416,12 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     app.use(express.static(path.join(__dirname, "dist")));
-    app.get("/*", (_req, res) => {
+    // Handle client-side routing - serve index.html for all non-API routes
+    app.use((req, res, next) => {
+      // Skip API routes
+      if (req.path.startsWith('/api/') || req.path.startsWith('/ai') || req.path.startsWith('/send-otp') || req.path.startsWith('/.well-known/')) {
+        return next();
+      }
       res.sendFile(path.join(__dirname, "dist", "index.html"));
     });
   }
