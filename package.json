@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build",
-    "build:all": "vite build && tsc --noEmit",
-    "preview": "vite preview",
+    "build": "npx vite build",
+    "build:all": "npx vite build && tsc --noEmit",
+    "preview": "npx vite preview",
     "start": "tsx server.ts",
     "lint": "tsc --noEmit"
   },
