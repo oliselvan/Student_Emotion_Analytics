@@ -19,6 +19,10 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
+  const apiBaseUrl =
+    import.meta.env.VITE_API_BASE_URL?.trim() ||
+    (import.meta.env.PROD ? "https://student-emotional-analytics-backend.onrender.com" : "");
+
   const [roleSelection, setRoleSelection] = useState<UserRole | null>(null);
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
@@ -98,7 +102,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [newPasswordInput, setNewPasswordInput] = useState('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim() || "";
   const [isClassroomValid, setIsClassroomValid] = useState<boolean | null>(null);
   const [isCheckingClassroom, setIsCheckingClassroom] = useState(false);
 
