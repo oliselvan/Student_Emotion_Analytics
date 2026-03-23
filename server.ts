@@ -115,12 +115,36 @@ async function checkFirestoreHealth() {
 async function startServer() {
   const app = express();
 
-  app.use(cors());
+  // Configure CORS for production
+  const corsOptions = {
+    origin: [
+      'https://emotion-95d44.web.app',
+      'https://emotion-95d44.firebaseapp.com',
+      'http://localhost:3000',
+      'http://localhost:5173'
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  };
+
+  app.use(cors(corsOptions));
   app.use(bodyParser.json({ limit: "50mb" }));
   app.use(express.json());
 
   app.get("/.well-known/appspecific/com.chrome.devtools.json", (_req, res) => {
     res.status(204).end();
+  });
+
+  // Test endpoint to verify API is working
+  app.get("/api/test", (req, res) => {
+    res.json({
+      message: "API is working!",
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV,
+      hasFirebase: !!process.env.FIREBASE_SERVICE_ACCOUNT,
+      hasGemini: !!process.env.GEMINI_API_KEY
+    });
   });
 
   app.post("/send-otp", async (req, res) => {
