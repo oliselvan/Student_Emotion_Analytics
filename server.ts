@@ -147,6 +147,16 @@ async function startServer() {
     });
   });
 
+  // Debug endpoint for student login
+  app.post("/api/debug/student-login", (req, res) => {
+    const { teacherEmail, studentName, password } = req.body;
+    console.log("Debug student login request:", { teacherEmail, studentName, hasPassword: !!password });
+    res.json({
+      received: { teacherEmail, studentName, hasPassword: !!password },
+      timestamp: new Date().toISOString()
+    });
+  });
+
   app.post("/send-otp", async (req, res) => {
     try {
       const { email, otp } = req.body;
@@ -255,6 +265,13 @@ async function startServer() {
       }
       res.status(500).json({ error: error.message || "Failed to reset password" });
     }
+  });
+
+  app.get("/api/auth/student-login", (_req, res) => {
+    res.status(405).json({
+      error: "Method not allowed.",
+      message: "Use POST for this endpoint.",
+    });
   });
 
   app.post("/api/auth/student-login", async (req, res) => {
