@@ -46,27 +46,32 @@ function getFirebaseAdmin() {
   if (!firebaseAdminApp) {
     const serviceAccount = loadEnvVar("FIREBASE_SERVICE_ACCOUNT");
     if (!serviceAccount) {
-      throw new Error("FIREBASE_SERVICE_ACCOUNT environment variable is missing.");
+      throw new Error("FIREBASE_SERVICE_ACCOUNT environment variable is missing. Please configure it in your deployment settings.");
     }
 
-    const cert = JSON.parse(serviceAccount);
-    const projectId = cert.project_id || firebaseConfig.projectId;
+    try {
+      const cert = JSON.parse(serviceAccount);
+      const projectId = cert.project_id || firebaseConfig.projectId;
 
-    if (
-      firebaseConfig.projectId &&
-      cert.project_id &&
-      firebaseConfig.projectId !== cert.project_id
-    ) {
-      console.warn(
-        `[Firebase] Project ID mismatch! Config: ${firebaseConfig.projectId}, Cert: ${cert.project_id}. Using Cert project ID to avoid PERMISSION_DENIED.`,
-      );
+      if (
+        firebaseConfig.projectId &&
+        cert.project_id &&
+        firebaseConfig.projectId !== cert.project_id
+      ) {
+        console.warn(
+          `[Firebase] Project ID mismatch! Config: ${firebaseConfig.projectId}, Cert: ${cert.project_id}. Using Cert project ID to avoid PERMISSION_DENIED.`,
+        );
+      }
+
+      console.log(`[Firebase] Initializing Admin SDK for project: ${projectId}`);
+      firebaseAdminApp = admin.initializeApp({
+        credential: admin.credential.cert(cert),
+        projectId,
+      });
+    } catch (error: any) {
+      console.error("[Firebase] Failed to initialize Firebase Admin SDK:", error.message);
+      throw new Error(`Firebase initialization failed: ${error.message}`);
     }
-
-    console.log(`[Firebase] Initializing Admin SDK for project: ${projectId}`);
-    firebaseAdminApp = admin.initializeApp({
-      credential: admin.credential.cert(cert),
-      projectId,
-    });
   }
 
   return firebaseAdminApp;
@@ -153,7 +158,12 @@ async function startServer() {
     });
   });
 
-  checkFirestoreHealth();
+  // Only check Firestore health if Firebase is properly configured
+  try {
+    checkFirestoreHealth();
+  } catch (error) {
+    console.warn("[Server] Skipping Firestore health check due to configuration issues:", error.message);
+  }
 
   app.post("/api/auth/send-otp", async (req, res) => {
     const { email } = req.body;
@@ -216,6 +226,9 @@ async function startServer() {
       res.json({ success: true, message: "Password reset successfully" });
     } catch (error: any) {
       console.error("Firebase Admin error:", error);
+      if (error.message.includes("FIREBASE_SERVICE_ACCOUNT")) {
+        return res.status(500).json({ error: "Firebase not configured. Please check deployment settings." });
+      }
       res.status(500).json({ error: error.message || "Failed to reset password" });
     }
   });
@@ -349,6 +362,9 @@ async function startServer() {
       });
     } catch (error: any) {
       console.error("Student login error:", error);
+      if (error.message.includes("FIREBASE_SERVICE_ACCOUNT")) {
+        return res.status(500).json({ error: "Firebase not configured. Please check deployment settings." });
+      }
       res.status(500).json({ error: error.message || "Internal server error during login" });
     }
   });
@@ -385,6 +401,9 @@ async function startServer() {
       res.json({ exists });
     } catch (error: any) {
       console.error("Check classroom error:", error);
+      if (error.message.includes("FIREBASE_SERVICE_ACCOUNT")) {
+        return res.status(500).json({ error: "Firebase not configured. Please check deployment settings." });
+      }
       res.status(500).json({ error: error.message });
     }
   });
