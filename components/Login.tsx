@@ -98,6 +98,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [newPasswordInput, setNewPasswordInput] = useState('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim() || "";
   const [isClassroomValid, setIsClassroomValid] = useState<boolean | null>(null);
   const [isCheckingClassroom, setIsCheckingClassroom] = useState(false);
 
@@ -111,7 +112,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       
       setIsCheckingClassroom(true);
       try {
-        const response = await fetch(`/api/auth/check-classroom/${encodeURIComponent(teacherEmailInput.trim())}`);
+        const response = await fetch(`${apiBaseUrl}/api/auth/check-classroom/${encodeURIComponent(teacherEmailInput.trim())}`);
         const data = await response.json();
         setIsClassroomValid(data.exists);
       } catch (err) {
@@ -145,7 +146,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       
       // Call our backend to verify credentials and get a custom token
       // This bypasses the 'Anonymous' provider which might be restricted
-      const response = await fetch('/api/auth/student-login', {
+      const response = await fetch(`${apiBaseUrl}/api/auth/student-login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -237,7 +238,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      const response = await fetch('/api/auth/send-otp', {
+      const response = await fetch(`${apiBaseUrl}/api/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: emailInput })
@@ -260,7 +261,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      const response = await fetch('/api/auth/reset-password', {
+      const response = await fetch(`${apiBaseUrl}/api/auth/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
