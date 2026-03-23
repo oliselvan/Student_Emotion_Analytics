@@ -2,7 +2,7 @@ services:
   - type: web
     name: student-emotional-analytics-backend
     runtime: node
-    buildCommand: npm ci && npm run build
+    buildCommand: NODE_ENV=development npm ci && npm run build
     startCommand: npm run start
     nodeVersion: "18"
     envVars:
