@@ -6,13 +6,13 @@
   "scripts": {
     "dev": "tsx server.ts",
     "build": "vite build",
+    "build:all": "vite build && tsc --noEmit",
     "preview": "vite preview",
-    "start": "node server.ts",
+    "start": "tsx server.ts",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@google/genai": "^1.39.0",
-    "better-sqlite3": "^12.6.2",
     "body-parser": "^2.2.2",
     "clsx": "^2.1.1",
     "cors": "^2.8.6",

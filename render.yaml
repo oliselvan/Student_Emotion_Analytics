@@ -2,11 +2,14 @@ services:
   - type: web
     name: student-emotional-analytics-backend
     runtime: node
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    nodeVersion: "18"
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=512
       - key: GEMINI_API_KEY
         sync: false
       - key: SMTP_HOST
