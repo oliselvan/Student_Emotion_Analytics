@@ -1,7 +1,10 @@
 {
   "name": "student-emotional-analytics",
+  "description": "Student Emotional Analytics — real-time emotional and sentiment analysis for students (frontend + server).",
+  "author": "Oli Selvan C <oselvan37@gmail.com>",
   "private": true,
   "version": "0.0.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",

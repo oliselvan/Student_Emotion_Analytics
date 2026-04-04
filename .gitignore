@@ -23,3 +23,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment files - ignore local secrets; keep .envexample in repo
+.env
+!.envexample
