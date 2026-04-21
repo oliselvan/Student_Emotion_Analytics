@@ -31,7 +31,7 @@ npm run build
 
 Environment
 
-See `.envexample` for available variables. Do NOT commit your `.env` file — it's ignored by git.
+See `.envexample` for available variables. `.env` file is ignored by git.
 
 Repository layout
 
